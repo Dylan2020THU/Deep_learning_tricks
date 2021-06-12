@@ -1,0 +1,63 @@
+# Logistic Regression 
+# 2021-6-8
+# TBSI, THU
+# ZHX
+
+import numpy as np
+from matplotlib import pyplot as plt
+import time
+
+
+def log_reg(data, y, training_number):
+    '''
+    :param data: The dataset
+    :param y: The label corresponding to each data in the dataset
+    :param training_number: Training number
+    :return: Weight vector & b & the cost of each training
+    '''
+
+    M = np.shape(data)[1]  # The number of the data in dataset
+    w = np.zeros(N)
+    b = np.zeros(M)
+    alpha = 0.01
+
+    cost = np.zeros(training_number)
+    for num in range(training_number):
+        z = np.dot(w, data) + b  # Get all z
+        y_head = 1 / (1 + np.exp(-z))
+
+        dz = y_head - y
+        dw = np.dot(data, dz) / M
+        db = np.sum(dz) / M
+
+        w = w - alpha * dw
+        b = b - alpha * db
+        cost[num] = -np.sum(np.dot(y, np.log(y_head)) + np.dot((1 - y), np.log(1 - y_head))) / M
+
+    return w, b[0], cost
+
+
+if __name__ == '__main__':
+    tic = time.time()
+    np.random.seed(2021)  # set the seed
+    M = 20  # The number of data
+    N = 2  # The dimension of each data
+    # data = np.random.randint(10, size=(N, M))  # Generate the dataset
+    # label = np.random.randint(2, size=M)  # The label set
+    data = np.array([[1, 6], [2, 10], [3, 9], [4, 7], [5, 10], [6, 2], [7, 1], [8, 3], [9, 2], [10, 1]]).T
+    label = np.array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0])
+
+    weight, basis, cost = log_reg(data, label, 1000)
+    print('w:', weight)
+    print('b:', basis)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(np.arange(len(cost)), cost)
+
+    plt.show()
+
+    toc = time.time()
+
+    t = toc - tic
+    print('Time: ' + str(t) + str(' s'))
