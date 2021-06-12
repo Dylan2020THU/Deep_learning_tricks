@@ -1,4 +1,4 @@
-# Linear Regression with SGD
+# Linear Regression with Mean Least Square
 # 2021-6-8
 # TBSI, THU
 # ZHX
