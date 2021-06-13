@@ -1,0 +1,82 @@
+# Logistic Regression with Log Function
+# 2021-6-8
+# TBSI, THU
+# ZHX
+
+import numpy as np
+from matplotlib import pyplot as plt
+import time
+
+
+class LR:
+    def __init__(self, data, y):
+        self.data = data
+        self.y = y
+
+    def train(self, training_number):
+        '''
+        :param training_number: Training number
+        :return: Weight vector & b & the cost of each training
+        '''
+
+        M = np.shape(self.data)[1]  # The number of the self.data in dataset
+        N = np.shape(self.data)[0]
+        w = np.zeros(N)
+        b = np.zeros(M)
+        alpha = 0.01
+
+        cost = np.zeros(training_number)
+        for num in range(training_number):
+            z = np.dot(w, self.data) + b  # Get all z
+            y_head = 1 / (1 + np.exp(-z))
+
+            dz = y_head - self.y
+            dw = np.dot(self.data, dz) / M
+            db = np.sum(dz) / M
+
+            w = w - alpha * dw
+            b = b - alpha * db
+            cost[num] = -np.sum(np.dot(self.y, np.log(y_head)) + np.dot((1 - self.y), np.log(1 - y_head))) / M
+
+        return w, b[0], cost
+
+    def judge(self, data1):
+        y_head1 = 1 / (1 + np.exp(-np.dot(w, np.array(data1)) + b))
+        if y_head1 >= 0.5:
+            return 1
+        else:
+            return 0
+
+
+if __name__ == '__main__':
+    tic = time.time()
+    # np.random.seed(2021)  # set the seed
+    # M = 20  # The number of data
+    # N = 2  # The dimension of each data
+    # data = np.random.randint(10, size=(N, M))  # Generate the dataset
+    # label = np.random.randint(2, size=M)  # The label set
+    dataset = np.array([[1, 6], [2, 10], [3, 9], [4, 7], [5, 10], [6, 2], [7, 1], [8, 3], [9, 2], [10, 1]]).T
+    label = np.array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0])
+
+    # weight, basis, cost = log_reg(data, label, 1000)
+    # print('w:', weight)
+    # print('b:', basis)
+
+    lr = LR(dataset, label)
+
+    w, b, cost = lr.train(1000)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(np.arange(len(cost)), cost)
+
+    # Test
+    new_data = np.array([1, 8])
+    new_label = lr.judge(new_data)
+    print('The lable of new data is: ', new_label)
+
+    toc = time.time()
+    t = toc - tic
+    print('Time: ' + str(t) + str(' s'))
+
+    plt.show()
