@@ -1,10 +1,11 @@
-# Logistic Regression with Log Function
-# 2021-6-8
+# Logistic Regression
+# 2021-6-21
 # TBSI, THU
 # ZHX
 
 import numpy as np
 from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import time
 
 
@@ -58,20 +59,29 @@ if __name__ == '__main__':
     dataset = np.array([[1, 6], [2, 10], [3, 9], [4, 7], [5, 10], [6, 2], [7, 1], [8, 3], [9, 2], [10, 1]]).T
     label = np.array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0])
 
+    fig1 = plt.figure()
+    ax1 = fig1.add_subplot(111)
+    ax1 = Axes3D(fig1)
+    ax1.scatter(dataset[0], dataset[1],c='b')
+
     # weight, basis, cost = log_reg(data, label, 1000)
     # print('w:', weight)
     # print('b:', basis)
 
     lr = LR(dataset, label)
+    w, b, cost = lr.train(100)  # Obtain optimal w,b
 
-    w, b, cost = lr.train(1000)
+    xx, yy = np.meshgrid(np.arange(np.min(dataset[0]) - 1, np.max(dataset[0]) + 1),
+                         np.arange(np.min(dataset[1]) - 1, np.max(dataset[1]) + 1))
+    zz = w[0] * xx + w[1] * yy + b
+    ax1.plot_surface(xx, yy, zz, color='r')
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.plot(np.arange(len(cost)), cost)
+    fig2 = plt.figure()
+    ax2 = fig2.add_subplot(111)
+    ax2.plot(np.arange(len(cost)), cost)
 
     # Test
-    new_data = np.array([1, 8])
+    new_data = np.array([8, 2])
     new_label = lr.judge(new_data)
     print('The lable of new data is: ', new_label)
 
